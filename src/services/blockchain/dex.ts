@@ -1,11 +1,11 @@
 import { ethers } from 'ethers';
 import type { Config } from '../../types/config';
 
-const PANCAKESWAP_ROUTER = "0x10ED43C718714eb63d5aA57B78B54704E256024E";
+const PANCAKESWAP_ROUTER = '0x10ED43C718714eb63d5aA57B78B54704E256024E';
 const ROUTER_ABI = [
-  "function getAmountsOut(uint amountIn, address[] calldata path) external view returns (uint[] memory amounts)",
-  "function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts)",
-  "function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline) external payable returns (uint[] memory amounts)"
+  'function getAmountsOut(uint amountIn, address[] calldata path) external view returns (uint[] memory amounts)',
+  'function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts)',
+  'function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline) external payable returns (uint[] memory amounts)',
 ];
 
 export const createDexService = (config: Config) => {
@@ -15,12 +15,12 @@ export const createDexService = (config: Config) => {
 
   const getTokenPrice = async (tokenAddress: string, baseTokenAddress: string) => {
     try {
-      const amountIn = ethers.utils.parseEther("1");
+      const amountIn = ethers.utils.parseEther('1');
       const path = [tokenAddress, baseTokenAddress];
       const amounts = await router.getAmountsOut(amountIn, path);
       return Number.parseFloat(ethers.utils.formatEther(amounts[1]));
     } catch (error) {
-      console.error("Error getting price:", error);
+      console.error('Error getting price:', error);
       return 0;
     }
   };
@@ -30,11 +30,11 @@ export const createDexService = (config: Config) => {
     const deadline = Math.floor(Date.now() / 1000) + 300;
     const amountIn = ethers.utils.parseEther(amount.toString());
     const slippage = 0.05; // 5% slippage
-    
+
     const expectedOutput = await router.getAmountsOut(amountIn, path);
-    const minOutput = expectedOutput[1].mul(
-      ethers.BigNumber.from(100 - Math.floor(slippage * 100))
-    ).div(100);
+    const minOutput = expectedOutput[1]
+      .mul(ethers.BigNumber.from(100 - Math.floor(slippage * 100)))
+      .div(100);
 
     const tx = await router.swapExactTokensForTokens(
       amountIn,
@@ -42,7 +42,7 @@ export const createDexService = (config: Config) => {
       path,
       config.WALLET_ADDRESS,
       deadline,
-      { gasLimit: 300000 }
+      { gasLimit: 300000 },
     );
 
     return tx.hash;
@@ -53,11 +53,11 @@ export const createDexService = (config: Config) => {
     const deadline = Math.floor(Date.now() / 1000) + 300;
     const amountIn = ethers.utils.parseEther(amount.toString());
     const slippage = 0.05;
-    
+
     const expectedOutput = await router.getAmountsOut(amountIn, path);
-    const minOutput = expectedOutput[1].mul(
-      ethers.BigNumber.from(100 - Math.floor(slippage * 100))
-    ).div(100);
+    const minOutput = expectedOutput[1]
+      .mul(ethers.BigNumber.from(100 - Math.floor(slippage * 100)))
+      .div(100);
 
     const tx = await router.swapExactTokensForTokens(
       amountIn,
@@ -65,7 +65,7 @@ export const createDexService = (config: Config) => {
       path,
       config.WALLET_ADDRESS,
       deadline,
-      { gasLimit: 300000 }
+      { gasLimit: 300000 },
     );
 
     return tx.hash;
@@ -76,4 +76,4 @@ export const createDexService = (config: Config) => {
   };
 
   return { getTokenPrice, createBuyOrder, createSellOrder, getGasPrice };
-}; 
+};

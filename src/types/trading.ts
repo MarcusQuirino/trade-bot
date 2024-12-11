@@ -6,14 +6,14 @@ export const tradeSchema = z.object({
   amount: z.number(),
   price: z.number(),
   totalValue: z.number(),
-  gasPrice: z.string()
+  gasPrice: z.string(),
 });
 
 export const indicatorsSchema = z.object({
   rsi: z.number(),
-  ema12: z.number(), 
+  ema12: z.number(),
   ema26: z.number(),
-  currentPrice: z.number()
+  currentPrice: z.number(),
 });
 
 export type Trade = z.infer<typeof tradeSchema>;

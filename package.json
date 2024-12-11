@@ -3,8 +3,8 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
-    "@types/bun": "latest",
-    "@biomejs/biome": "1.9.4"
+    "@biomejs/biome": "1.9.4",
+    "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
@@ -19,8 +19,8 @@
   "scripts": {
     "format": "biome format --write .",
     "lint": "biome lint .",
-    "lint:fix": "biome lint --apply .",
-    "check": "biome check --apply .",
+    "lint:fix": "biome lint --write .",
+    "check": "biome check --write .",
     "ci": "biome ci ."
   }
 }

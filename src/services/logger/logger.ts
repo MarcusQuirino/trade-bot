@@ -10,7 +10,10 @@ const transport = pino.transport({
   },
 });
 
-export const logger = pino({
-  level: config.LOG_LEVEL,
-  base: undefined,
-}, transport);  
+export const logger = pino(
+  {
+    level: config.LOG_LEVEL,
+    base: undefined,
+  },
+  transport,
+);
