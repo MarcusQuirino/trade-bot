@@ -1,13 +1,13 @@
-import { z } from 'zod';
-import type { Config } from '../../types/config';
-import { logger } from '../logger/logger';
+import { z } from "zod";
+import type { Env } from "../../types/config";
+import { logger } from "../logger/logger";
 
 // Simulated price volatility settings
 const PRICE_VOLATILITY = 0.02; // 2% max price change per call
 const INITIAL_TOKEN_PRICES = {
-  '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c': 300, // WBNB
-  '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56': 1, // BUSD
-  '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82': 4, // CAKE
+  "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c": 300, // WBNB
+  "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56": 1, // BUSD
+  "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82": 4, // CAKE
 } as const;
 
 const mockPrices = { ...INITIAL_TOKEN_PRICES };
@@ -17,10 +17,13 @@ function getRandomPriceChange(currentPrice: number): number {
   return (Math.random() - 0.5) * 2 * maxChange;
 }
 
-export function createMockDexService(config: Config) {
+export function createMockDexService(config: Env) {
   console.log(config);
 
-  const getTokenPrice = async (tokenAddress: string, baseTokenAddress: string) => {
+  const getTokenPrice = async (
+    tokenAddress: string,
+    baseTokenAddress: string
+  ) => {
     try {
       // Simulate network delay
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -38,12 +41,17 @@ export function createMockDexService(config: Config) {
           tokenAddress,
           price: tokenPrices[tokenAddress],
         },
-        'Mock price fetched',
+        "Mock price fetched"
       );
 
       return tokenPrices[tokenAddress];
     } catch (error) {
-      logger.error({ error, tokenAddress }, 'Error getting mock price');
+      logger.error({
+        error,
+        tokenAddress,
+        baseTokenAddress,
+        msg: "Failed to get mock token price",
+      });
       return 0;
     }
   };
@@ -59,7 +67,7 @@ export function createMockDexService(config: Config) {
 
       const mockTxHash = `0x${Array.from({ length: 64 })
         .map(() => Math.floor(Math.random() * 16).toString(16))
-        .join('')}`;
+        .join("")}`;
 
       logger.info(
         {
@@ -67,13 +75,22 @@ export function createMockDexService(config: Config) {
           amount,
           txHash: mockTxHash,
         },
-        'Mock buy order created',
+        "Mock buy order created"
       );
 
       return mockTxHash;
     } catch (error) {
-      logger.error({ error, tokenAddress, amount }, 'Error creating mock buy order');
-      throw new Error('Failed to create mock buy order');
+      logger.error({
+        error,
+        tokenAddress,
+        amount,
+        msg: "Failed to create mock order",
+      });
+      throw new Error(
+        `Failed to create mock buy order: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   };
 
@@ -88,7 +105,7 @@ export function createMockDexService(config: Config) {
 
       const mockTxHash = `0x${Array.from({ length: 64 })
         .map(() => Math.floor(Math.random() * 16).toString(16))
-        .join('')}`;
+        .join("")}`;
 
       logger.info(
         {
@@ -96,13 +113,22 @@ export function createMockDexService(config: Config) {
           amount,
           txHash: mockTxHash,
         },
-        'Mock sell order created',
+        "Mock sell order created"
       );
 
       return mockTxHash;
     } catch (error) {
-      logger.error({ error, tokenAddress, amount }, 'Error creating mock sell order');
-      throw new Error('Failed to create mock sell order');
+      logger.error({
+        error,
+        tokenAddress,
+        amount,
+        msg: "Failed to create mock order",
+      });
+      throw new Error(
+        `Failed to create mock sell order: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   };
 
@@ -113,7 +139,7 @@ export function createMockDexService(config: Config) {
     // Return a random gas price between 5-15 Gwei
     const mockGasPrice = Math.floor(Math.random() * 10 + 5) * 1e9;
 
-    logger.debug({ gasPrice: mockGasPrice }, 'Mock gas price fetched');
+    logger.debug({ gasPrice: mockGasPrice }, "Mock gas price fetched");
 
     return mockGasPrice.toString();
   };

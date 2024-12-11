@@ -1,27 +1,30 @@
-import { config } from './config';
-import { createAnalysisService } from './services/analysis/indicators';
+import { config } from "./config";
+import { createAnalysisService } from "./services/analysis/indicators";
 // import { createDexService } from './services/blockchain/dex';
-import { createMockDexService } from './services/blockchain/mock-dex';
-import { createDiscordBot } from './services/discord/bot';
-import { logger } from './services/logger/logger';
+import { createMockDexService } from "./services/blockchain/mock-dex";
+import { createDiscordBot } from "./services/discord/bot";
+import { logger } from "./services/logger/logger";
 
-const startBot = async () => {
-  logger.info('Initializing trade bot services...');
+async function main() {
+  try {
+    logger.info("Initializing trade bot services...");
 
-  const dexService = createMockDexService(config);
-  logger.info('Mock DEX service initialized');
+    const dexService = createMockDexService(config);
+    logger.info("Mock DEX service initialized");
 
-  const analysisService = createAnalysisService();
-  logger.info('Analysis service initialized');
+    const analysisService = createAnalysisService();
+    logger.info("Analysis service initialized");
 
-  const bot = createDiscordBot(config, dexService, analysisService);
-  logger.info('Discord bot created');
+    const bot = createDiscordBot(config, dexService, analysisService);
+    await bot.start();
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error("Failed to start application:", error.message);
+    } else {
+      logger.error("Failed to start application:", error);
+    }
+    process.exit(1);
+  }
+}
 
-  await bot.start();
-  logger.info('Bot started successfully');
-};
-
-startBot().catch((error) => {
-  logger.error({ error }, 'Failed to start the bot');
-  process.exit(1);
-});
+main();

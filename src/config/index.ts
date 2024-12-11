@@ -1,4 +1,4 @@
-import type { Config } from '../types/config';
-import { validateEnv } from './env';
+import type { Env } from "../types/config";
+import { validateEnv } from "./env";
 
-export const config: Config = validateEnv();
+export const config: Env = validateEnv();
